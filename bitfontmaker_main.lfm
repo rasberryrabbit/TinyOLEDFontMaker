@@ -1,10 +1,10 @@
 object Form1: TForm1
   Left = 274
-  Height = 397
+  Height = 576
   Top = 143
   Width = 586
   Caption = 'TinyOLED Font Generator'
-  ClientHeight = 397
+  ClientHeight = 576
   ClientWidth = 586
   Constraints.MinHeight = 397
   Constraints.MinWidth = 586
@@ -93,13 +93,13 @@ object Form1: TForm1
   end
   object ScrollBox1: TScrollBox
     Left = 160
-    Height = 378
+    Height = 281
     Top = 8
     Width = 419
     HorzScrollBar.Page = 338
     VertScrollBar.Page = 248
     Anchors = [akTop, akLeft, akRight, akBottom]
-    ClientHeight = 374
+    ClientHeight = 277
     ClientWidth = 415
     TabOrder = 5
     object Image1: TImage
@@ -126,6 +126,29 @@ object Form1: TForm1
     Caption = 'Export Text'
     OnClick = ButtonExTxtClick
     TabOrder = 7
+  end
+  object Memo1: TMemo
+    Left = 160
+    Height = 66
+    Top = 304
+    Width = 416
+    TabOrder = 8
+  end
+  object Memo2: TMemo
+    Left = 160
+    Height = 176
+    Top = 384
+    Width = 416
+    TabOrder = 9
+  end
+  object Button2: TButton
+    Left = 40
+    Height = 25
+    Top = 448
+    Width = 75
+    Caption = 'Test'
+    OnClick = Button2Click
+    TabOrder = 10
   end
   object FontDialog1: TFontDialog
     OnClose = FontDialog1Close
