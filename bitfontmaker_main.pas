@@ -184,7 +184,7 @@ begin
     i:=0;
     while i<cx do begin
       x:=0;
-      while x+cx<st.Count do begin
+      while x+cx<=st.Count do begin
         s:=StringReplace(st.Strings[i+x],'0x','$',[]);
         j:=StrToInt(s);
         sb:='';
