@@ -1,0 +1,151 @@
+object Form1: TForm1
+  Left = 274
+  Height = 397
+  Top = 143
+  Width = 586
+  Caption = 'TinyOLED Font Generator'
+  ClientHeight = 397
+  ClientWidth = 586
+  Constraints.MinHeight = 397
+  Constraints.MinWidth = 586
+  OnShow = FormShow
+  LCLVersion = '2.3.0.0'
+  object SpinEditWidth: TSpinEdit
+    Left = 16
+    Height = 23
+    Top = 32
+    Width = 56
+    MaxValue = 128
+    MinValue = 4
+    OnChange = SpinEditChange
+    TabOrder = 0
+    Value = 16
+  end
+  object SpinEditHeight: TSpinEdit
+    Left = 16
+    Height = 23
+    Top = 80
+    Width = 56
+    MaxValue = 128
+    MinValue = 4
+    OnChange = SpinEditChange
+    TabOrder = 1
+    Value = 32
+  end
+  object SpinEditFontSize: TSpinEdit
+    Left = 8
+    Height = 23
+    Top = 224
+    Width = 56
+    MaxValue = 128
+    MinValue = 1
+    OnChange = SpinEditFontSizeChange
+    TabOrder = 2
+    Value = 16
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 12
+    Top = 16
+    Width = 73
+    Caption = 'Bitmap Width'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 12
+    Top = 64
+    Width = 78
+    Caption = 'Bitmap Height'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 8
+    Height = 12
+    Top = 208
+    Width = 52
+    Caption = 'Font size'
+    ParentColor = False
+  end
+  object Label4: TLabel
+    Left = 8
+    Height = 12
+    Top = 160
+    Width = 62
+    Caption = 'Font Name'
+    ParentColor = False
+  end
+  object Button1: TButton
+    Left = 128
+    Height = 25
+    Top = 176
+    Width = 24
+    Caption = '...'
+    OnClick = Button1Click
+    TabOrder = 3
+  end
+  object EditFontName: TEdit
+    Left = 8
+    Height = 23
+    Top = 176
+    Width = 112
+    TabOrder = 4
+  end
+  object ScrollBox1: TScrollBox
+    Left = 160
+    Height = 378
+    Top = 8
+    Width = 419
+    HorzScrollBar.Page = 338
+    VertScrollBar.Page = 248
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ClientHeight = 374
+    ClientWidth = 415
+    TabOrder = 5
+    object Image1: TImage
+      Left = 0
+      Height = 248
+      Top = 0
+      Width = 338
+    end
+  end
+  object ButtonExImg: TButton
+    Left = 24
+    Height = 25
+    Top = 264
+    Width = 99
+    Caption = 'Export Image'
+    OnClick = ButtonExImgClick
+    TabOrder = 6
+  end
+  object ButtonExTxt: TButton
+    Left = 24
+    Height = 25
+    Top = 344
+    Width = 99
+    Caption = 'Export Text'
+    OnClick = ButtonExTxtClick
+    TabOrder = 7
+  end
+  object FontDialog1: TFontDialog
+    OnClose = FontDialog1Close
+    Font.Height = -21
+    MinFontSize = 0
+    MaxFontSize = 0
+    PreviewText = '0123 abcd'
+    Left = 112
+    Top = 104
+  end
+  object SavePictureDialog1: TSavePictureDialog
+    Title = 'Export to Image'
+    DefaultExt = '.png'
+    Left = 64
+    Top = 296
+  end
+  object SaveDialog1: TSaveDialog
+    Title = 'Export as TinyOLED Data'
+    DefaultExt = '.txt'
+    Left = 120
+    Top = 296
+  end
+end
