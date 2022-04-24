@@ -14,24 +14,28 @@ type
 
   TForm1 = class(TForm)
     Button1: TButton;
+    ButtonOpenImg: TButton;
     ButtonExTxt: TButton;
     ButtonExImg: TButton;
     EditFontName: TEdit;
     FontDialog1: TFontDialog;
+    GroupBox1: TGroupBox;
     Image1: TImage;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
+    OpenPictureDialog1: TOpenPictureDialog;
     SaveDialog1: TSaveDialog;
     SavePictureDialog1: TSavePictureDialog;
     ScrollBox1: TScrollBox;
-    SpinEditWidth: TSpinEdit;
-    SpinEditHeight: TSpinEdit;
     SpinEditFontSize: TSpinEdit;
+    SpinEditHeight: TSpinEdit;
+    SpinEditWidth: TSpinEdit;
     procedure Button1Click(Sender: TObject);
     procedure ButtonExTxtClick(Sender: TObject);
     procedure ButtonExImgClick(Sender: TObject);
+    procedure ButtonOpenImgClick(Sender: TObject);
     procedure FontDialog1Close(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure SpinEditChange(Sender: TObject);
@@ -84,6 +88,22 @@ procedure TForm1.ButtonExImgClick(Sender: TObject);
 begin
   if SavePictureDialog1.Execute then
     Image1.Picture.SaveToFile(SavePictureDialog1.FileName);
+end;
+
+procedure TForm1.ButtonOpenImgClick(Sender: TObject);
+begin
+  if OpenPictureDialog1.Execute then begin
+    Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+    SpinEditWidth.OnChange:=nil;
+    SpinEditHeight.OnChange:=nil;
+    try
+      SpinEditWidth.Value:=Image1.Picture.Bitmap.Width div 16;
+      SpinEditHeight.Value:=Image1.Picture.Bitmap.Height div 6;
+    finally
+      SpinEditWidth.OnChange:=@SpinEditChange;
+      SpinEditHeight.OnChange:=@SpinEditChange;
+    end;
+  end;
 end;
 
 procedure TForm1.FontDialog1Close(Sender: TObject);
