@@ -14,7 +14,6 @@ type
 
   TForm1 = class(TForm)
     Button1: TButton;
-    Button2: TButton;
     ButtonExTxt: TButton;
     ButtonExImg: TButton;
     EditFontName: TEdit;
@@ -24,8 +23,6 @@ type
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
-    Memo1: TMemo;
-    Memo2: TMemo;
     SaveDialog1: TSaveDialog;
     SavePictureDialog1: TSavePictureDialog;
     ScrollBox1: TScrollBox;
@@ -33,7 +30,6 @@ type
     SpinEditHeight: TSpinEdit;
     SpinEditFontSize: TSpinEdit;
     procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
     procedure ButtonExTxtClick(Sender: TObject);
     procedure ButtonExImgClick(Sender: TObject);
     procedure FontDialog1Close(Sender: TObject);
@@ -66,11 +62,6 @@ uses
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   FontDialog1.Execute;
-end;
-
-procedure TForm1.Button2Click(Sender: TObject);
-begin
-  Memo2.Lines.Text:=DecodeBuffer(Memo1.Lines.Text,SpinEditWidth.Value);
 end;
 
 procedure TForm1.ButtonExTxtClick(Sender: TObject);
