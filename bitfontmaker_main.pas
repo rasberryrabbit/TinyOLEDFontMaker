@@ -261,6 +261,7 @@ begin
     Result:=Format('// %s, size: %d', [EditFontName.Text,FontDialog1.Font.Size])+LineEnding;
     Result:=Result+Format('// Width=%d, Height=%d', [bx, by])+LineEnding;
     for i:=0 to 95 do begin
+      Result:=Result+'//'+IntToStr(i+32)+' '+char(i+32)+LineEnding;
       fx:=bx*(i mod 16);
       fy:=by*(i div 16);
       bm.Canvas.CopyRect(Rect(0, 0, bx, by), Image1.Picture.Bitmap.Canvas, Rect(
@@ -285,7 +286,6 @@ begin
         inc(dy, 8);
         ix:=0;
       end;
-      Result:=Result+'//'+IntToStr(i+32)+' '+char(i+32)+LineEnding;
     end;
   finally
     bm.Free;
