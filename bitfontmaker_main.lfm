@@ -51,7 +51,7 @@ object Form1: TForm1
     Height = 224
     Top = 0
     Width = 161
-    Caption = 'GroupBox1'
+    Caption = ' Setting '
     ClientHeight = 207
     ClientWidth = 157
     TabOrder = 3
