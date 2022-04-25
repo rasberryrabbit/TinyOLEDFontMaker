@@ -155,7 +155,7 @@ begin
       bm.SetSize(fs.cx, fs.cy);
       bm.Canvas.Font.Color:=clWhite;
       bm.Canvas.Brush.Color:=clBlack;
-      bm.Canvas.Rectangle(0,0,bm.Width,bm.Height);
+      bm.Canvas.FillRect(0,0,bm.Width,bm.Height);
       bm.Canvas.TextOut(0,0,char(32+i));
       // copy font bitmap
       fx:=iWidth*(i mod 16);

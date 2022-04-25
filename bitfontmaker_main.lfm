@@ -72,7 +72,7 @@ object Form1: TForm1
       MinValue = 4
       OnChange = SpinEditChange
       TabOrder = 0
-      Value = 16
+      Value = 11
     end
     object SpinEditHeight: TSpinEdit
       Left = 16
@@ -83,7 +83,7 @@ object Form1: TForm1
       MinValue = 4
       OnChange = SpinEditChange
       TabOrder = 1
-      Value = 32
+      Value = 16
     end
     object Label2: TLabel
       Left = 8
@@ -126,7 +126,7 @@ object Form1: TForm1
       MinValue = 1
       OnChange = SpinEditFontSizeChange
       TabOrder = 4
-      Value = 16
+      Value = 12
     end
     object Label3: TLabel
       Left = 8
@@ -148,12 +148,12 @@ object Form1: TForm1
   end
   object FontDialog1: TFontDialog
     OnClose = FontDialog1Close
-    Font.Height = -21
+    Font.Height = -16
     MinFontSize = 0
     MaxFontSize = 0
     PreviewText = '0123 abcd'
-    Left = 104
-    Top = 48
+    Left = 96
+    Top = 120
   end
   object SavePictureDialog1: TSavePictureDialog
     Title = 'Export to Image'
