@@ -25,11 +25,13 @@ type
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
+    Label5: TLabel;
     OpenPictureDialog1: TOpenPictureDialog;
     SaveDialog1: TSaveDialog;
     SavePictureDialog1: TSavePictureDialog;
     ScrollBox1: TScrollBox;
     SpinEditFontSize: TSpinEdit;
+    SpinEditGrayLevel: TSpinEdit;
     SpinEditHeight: TSpinEdit;
     SpinEditWidth: TSpinEdit;
     procedure Button1Click(Sender: TObject);
@@ -57,7 +59,7 @@ var
 implementation
 
 uses
-  Types;
+  Types, BGRABitmap, BGRABitmapTypes;
 
 {$R *.lfm}
 
@@ -139,31 +141,67 @@ end;
 procedure TForm1.DrawFontList(iWidth, iHeight, iFontSize: Integer);
 var
   s: string;
-  i, fx, fy: Integer;
+  i, fx, fy, tx, ty, glvl: Integer;
   bm: TBitmap;
+  bma: TBGRABitmap;
+  p: PBGRAPixel;
   fs: TSize;
 begin
-  bm:=TBitmap.Create;
+  glvl:=SpinEditGrayLevel.Value;
+  bma:=TBGRABitmap.Create;
   try
-    bm.PixelFormat:=pf1bit;
-    Image1.Picture.Bitmap.SetSize(iWidth*16,iHeight*6);
+    bm:=TBitmap.Create;
+    try
+      bm.PixelFormat:=pf1bit;
+      Image1.Picture.Bitmap.SetSize(iWidth*16,iHeight*6);
 
-    for i:=0 to 95 do begin
-      // make font bitmap
-      bm.Canvas.Font.Assign(FontDialog1.Font);
-      fs:=bm.Canvas.TextExtent(char(32+i));
-      bm.SetSize(fs.cx, fs.cy);
-      bm.Canvas.Font.Color:=clWhite;
-      bm.Canvas.Brush.Color:=clBlack;
-      bm.Canvas.FillRect(0,0,bm.Width,bm.Height);
-      bm.Canvas.TextOut(0,0,char(32+i));
-      // copy font bitmap
-      fx:=iWidth*(i mod 16);
-      fy:=iHeight*(i div 16);
-      Image1.Picture.Bitmap.Canvas.CopyRect(Rect(fx,fy,fx+iWidth,fy+iHeight),bm.Canvas,Rect(0,0,bm.Width,bm.Height));
+      for i:=0 to 95 do begin
+        // make font bitmap
+        bm.Canvas.Font.Assign(FontDialog1.Font);
+        fs:=bm.Canvas.TextExtent(char(32+i));
+
+        tx:=0;
+        if fs.cx<iWidth then begin
+          tx:=(iWidth-fs.cx) div 2;
+          fs.cx:=iWidth;
+        end;
+        ty:=0;
+        if fs.cy<iHeight then begin
+          ty:=(iHeight-fs.cy) div 2;
+          fs.cy:=iHeight;
+        end;
+
+        bm.SetSize(fs.cx, fs.cy);
+        bm.Canvas.Font.Color:=clWhite;
+        bm.Canvas.Brush.Color:=clBlack;
+        bm.Canvas.FillRect(0,0,bm.Width,bm.Height);
+        bm.Canvas.TextOut(tx,ty,char(32+i));
+
+        bma.Assign(bm);
+        bma.ResampleFilter:=rfBox;
+        BGRAReplace(bma,bma.Resample(iWidth,iHeight));
+        //
+        for ty:=0 to iHeight-1 do begin
+          p:=bma.ScanLine[ty];
+          for tx:=0 to iWidth-1 do begin
+            if p^.blue>=glvl then
+              p^.FromColor(clWhite)
+              else
+                p^.FromColor(clBlack);
+            inc(p);
+          end;
+        end;
+        bma.InvalidateBitmap;
+        // copy font bitmap
+        fx:=iWidth*(i mod 16);
+        fy:=iHeight*(i div 16);
+        Image1.Picture.Bitmap.Canvas.CopyRect(Rect(fx,fy,fx+iWidth,fy+iHeight),bma.Canvas,Rect(0,0,bma.Width,bma.Height));
+      end;
+    finally
+      bm.Free;
     end;
   finally
-    bm.Free;
+    bma.Free;
   end;
 end;
 

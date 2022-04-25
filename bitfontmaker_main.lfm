@@ -48,11 +48,11 @@ object Form1: TForm1
   end
   object GroupBox1: TGroupBox
     Left = 0
-    Height = 224
+    Height = 208
     Top = 0
     Width = 161
     Caption = ' Setting '
-    ClientHeight = 207
+    ClientHeight = 191
     ClientWidth = 157
     TabOrder = 3
     object Label1: TLabel
@@ -64,10 +64,10 @@ object Form1: TForm1
       ParentColor = False
     end
     object SpinEditWidth: TSpinEdit
-      Left = 16
+      Left = 104
       Height = 23
-      Top = 32
-      Width = 56
+      Top = 8
+      Width = 44
       MaxValue = 128
       MinValue = 4
       OnChange = SpinEditChange
@@ -75,10 +75,10 @@ object Form1: TForm1
       Value = 11
     end
     object SpinEditHeight: TSpinEdit
-      Left = 16
+      Left = 104
       Height = 23
-      Top = 80
-      Width = 56
+      Top = 40
+      Width = 44
       MaxValue = 128
       MinValue = 4
       OnChange = SpinEditChange
@@ -88,7 +88,7 @@ object Form1: TForm1
     object Label2: TLabel
       Left = 8
       Height = 12
-      Top = 64
+      Top = 48
       Width = 78
       Caption = 'Bitmap Height'
       ParentColor = False
@@ -96,7 +96,7 @@ object Form1: TForm1
     object Label4: TLabel
       Left = 8
       Height = 12
-      Top = 112
+      Top = 80
       Width = 62
       Caption = 'Font Name'
       ParentColor = False
@@ -104,24 +104,24 @@ object Form1: TForm1
     object EditFontName: TEdit
       Left = 8
       Height = 23
-      Top = 128
+      Top = 96
       Width = 120
       TabOrder = 2
     end
     object Button1: TButton
       Left = 128
       Height = 25
-      Top = 128
+      Top = 96
       Width = 24
       Caption = '...'
       OnClick = Button1Click
       TabOrder = 3
     end
     object SpinEditFontSize: TSpinEdit
-      Left = 16
+      Left = 104
       Height = 23
-      Top = 176
-      Width = 56
+      Top = 128
+      Width = 44
       MaxValue = 128
       MinValue = 1
       OnChange = SpinEditFontSizeChange
@@ -131,20 +131,39 @@ object Form1: TForm1
     object Label3: TLabel
       Left = 8
       Height = 12
-      Top = 160
+      Top = 128
       Width = 52
       Caption = 'Font size'
+      ParentColor = False
+    end
+    object Label5: TLabel
+      Left = 8
+      Height = 12
+      Top = 168
+      Width = 61
+      Caption = 'Gray Level'
       ParentColor = False
     end
   end
   object ButtonOpenImg: TButton
     Left = 24
     Height = 25
-    Top = 248
+    Top = 264
     Width = 99
     Caption = 'Open Image'
     OnClick = ButtonOpenImgClick
     TabOrder = 0
+  end
+  object SpinEditGrayLevel: TSpinEdit
+    Left = 105
+    Height = 23
+    Top = 176
+    Width = 46
+    MaxValue = 255
+    MinValue = 1
+    OnChange = SpinEditFontSizeChange
+    TabOrder = 5
+    Value = 95
   end
   object FontDialog1: TFontDialog
     OnClose = FontDialog1Close
@@ -152,8 +171,8 @@ object Form1: TForm1
     MinFontSize = 0
     MaxFontSize = 0
     PreviewText = '0123 abcd'
-    Left = 96
-    Top = 120
+    Left = 88
+    Top = 88
   end
   object SavePictureDialog1: TSavePictureDialog
     Title = 'Export to Image'
