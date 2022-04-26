@@ -75,6 +75,9 @@ var
   sbuf: string;
   fs: TFileStream;
 begin
+  SaveDialog1.FileName:=Format('%s_%d_%d_%d_%d.txt',[EditFontName.Text,SpinEditWidth.Value,
+                                   SpinEditHeight.Value,SpinEditFontSize.Value,SpinEditGrayLevel.Value]);
+
   if SaveDialog1.Execute then begin
     sbuf:=EncodeBitmap;
     fs:=TFileStream.Create(SaveDialog1.FileName,fmCreate or fmOpenReadWrite);
@@ -88,6 +91,8 @@ end;
 
 procedure TForm1.ButtonExImgClick(Sender: TObject);
 begin
+  SavePictureDialog1.FileName:=Format('%s_%d_%d_%d_%d.png',[EditFontName.Text,SpinEditWidth.Value,
+                                   SpinEditHeight.Value,SpinEditFontSize.Value,SpinEditGrayLevel.Value]);
   if SavePictureDialog1.Execute then
     Image1.Picture.SaveToFile(SavePictureDialog1.FileName);
 end;
