@@ -1,10 +1,10 @@
 object Form1: TForm1
   Left = 274
-  Height = 397
+  Height = 430
   Top = 143
   Width = 586
   Caption = 'TinyOLED Font Generator'
-  ClientHeight = 397
+  ClientHeight = 430
   ClientWidth = 586
   Constraints.MinHeight = 397
   Constraints.MinWidth = 586
@@ -12,13 +12,13 @@ object Form1: TForm1
   LCLVersion = '2.3.0.0'
   object ScrollBox1: TScrollBox
     Left = 168
-    Height = 376
+    Height = 409
     Top = 8
     Width = 411
     HorzScrollBar.Page = 338
     VertScrollBar.Page = 248
     Anchors = [akTop, akLeft, akRight, akBottom]
-    ClientHeight = 372
+    ClientHeight = 405
     ClientWidth = 407
     TabOrder = 4
     object Image1: TImage
@@ -29,30 +29,32 @@ object Form1: TForm1
     end
   end
   object ButtonExImg: TButton
-    Left = 24
+    Left = 32
     Height = 25
-    Top = 312
+    Top = 352
     Width = 99
+    Anchors = [akLeft, akBottom]
     Caption = 'Export Image'
     OnClick = ButtonExImgClick
     TabOrder = 1
   end
   object ButtonExTxt: TButton
-    Left = 24
+    Left = 32
     Height = 25
-    Top = 352
+    Top = 392
     Width = 99
+    Anchors = [akLeft, akBottom]
     Caption = 'Export Text'
     OnClick = ButtonExTxtClick
     TabOrder = 2
   end
   object GroupBox1: TGroupBox
     Left = 0
-    Height = 208
+    Height = 240
     Top = 0
     Width = 161
     Caption = ' Setting '
-    ClientHeight = 191
+    ClientHeight = 223
     ClientWidth = 157
     TabOrder = 3
     object Label1: TLabel
@@ -109,9 +111,9 @@ object Form1: TForm1
       TabOrder = 2
     end
     object Button1: TButton
-      Left = 128
+      Left = 130
       Height = 25
-      Top = 96
+      Top = 95
       Width = 24
       Caption = '...'
       OnClick = Button1Click
@@ -144,12 +146,46 @@ object Form1: TForm1
       Caption = 'Gray Level'
       ParentColor = False
     end
+    object ComboBoxAA: TComboBox
+      Left = 64
+      Height = 23
+      Top = 192
+      Width = 84
+      ItemHeight = 15
+      ItemIndex = 5
+      Items.Strings = (
+        'Box'
+        'Linear'
+        'HalfCosine'
+        'Cosine'
+        'Bicubic'
+        'Mitchell'
+        'Spline'
+        'Lanczos2'
+        'Lanczos3'
+        'Lanczos4'
+        'BestQuality'
+      )
+      OnChange = SpinEditChange
+      Style = csDropDownList
+      TabOrder = 5
+      Text = 'Mitchell'
+    end
+    object Label6: TLabel
+      Left = 8
+      Height = 12
+      Top = 198
+      Width = 45
+      Caption = 'Text AA'
+      ParentColor = False
+    end
   end
   object ButtonOpenImg: TButton
-    Left = 24
+    Left = 32
     Height = 25
-    Top = 264
+    Top = 312
     Width = 99
+    Anchors = [akLeft, akBottom]
     Caption = 'Open Image'
     OnClick = ButtonOpenImgClick
     TabOrder = 0

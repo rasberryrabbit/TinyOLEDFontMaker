@@ -17,6 +17,7 @@ type
     ButtonOpenImg: TButton;
     ButtonExTxt: TButton;
     ButtonExImg: TButton;
+    ComboBoxAA: TComboBox;
     EditFontName: TEdit;
     FontDialog1: TFontDialog;
     GroupBox1: TGroupBox;
@@ -26,6 +27,7 @@ type
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
+    Label6: TLabel;
     OpenPictureDialog1: TOpenPictureDialog;
     SaveDialog1: TSaveDialog;
     SavePictureDialog1: TSavePictureDialog;
@@ -183,7 +185,7 @@ begin
         bm.Canvas.TextOut(tx,ty,char(32+i));
 
         bma.Assign(bm);
-        bma.ResampleFilter:=rfBox;
+        bma.ResampleFilter:=TResampleFilter(ComboBoxAA.ItemIndex);
         BGRAReplace(bma,bma.Resample(iWidth,iHeight));
         //
         for ty:=0 to iHeight-1 do begin
