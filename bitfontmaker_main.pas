@@ -5,7 +5,7 @@ unit bitFontMaker_main;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Grids, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, Spin, ExtDlgs;
 
 type
@@ -17,6 +17,8 @@ type
     ButtonOpenImg: TButton;
     ButtonExTxt: TButton;
     ButtonExImg: TButton;
+    CheckBoxFitCenterY: TCheckBox;
+    CheckBoxScale: TCheckBox;
     ComboBoxAA: TComboBox;
     EditFontName: TEdit;
     FontDialog1: TFontDialog;
@@ -47,7 +49,7 @@ type
   private
     procedure OnBitmapPress(Sender:TObject);
   public
-    procedure DrawFontList(iWidth, iHeight, iFontSize: Integer);
+    procedure DrawFontList(iWidth, iHeight: Integer);
 
     // for debug
     function DecodeBuffer(const sbuf: string; cx: Integer):string;
@@ -119,19 +121,19 @@ procedure TForm1.FontDialog1Close(Sender: TObject);
 begin
   EditFontName.Text:=FontDialog1.Font.Name;
   SpinEditFontSize.Value:=FontDialog1.Font.Size;
-  DrawFontList(SpinEditWidth.Value, SpinEditHeight.Value, SpinEditFontSize.Value);
+  DrawFontList(SpinEditWidth.Value, SpinEditHeight.Value);
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
   EditFontName.Text:=FontDialog1.Font.Name;
   SpinEditFontSize.Value:=FontDialog1.Font.Size;
-  DrawFontList(SpinEditWidth.Value, SpinEditHeight.Value, SpinEditFontSize.Value);
+  DrawFontList(SpinEditWidth.Value, SpinEditHeight.Value);
 end;
 
 procedure TForm1.SpinEditChange(Sender: TObject);
 begin
-  DrawFontList(SpinEditWidth.Value, SpinEditHeight.Value, SpinEditFontSize.Value);
+  DrawFontList(SpinEditWidth.Value, SpinEditHeight.Value);
 end;
 
 procedure TForm1.SpinEditFontSizeChange(Sender: TObject);
@@ -145,16 +147,19 @@ begin
 
 end;
 
-procedure TForm1.DrawFontList(iWidth, iHeight, iFontSize: Integer);
+procedure TForm1.DrawFontList(iWidth, iHeight: Integer);
 var
-  s: string;
   i, fx, fy, tx, ty, glvl: Integer;
   bm: TBitmap;
   bma: TBGRABitmap;
   p: PBGRAPixel;
   fs: TSize;
+  NoScale: Boolean;
+  FitCY: Boolean;
 begin
   glvl:=SpinEditGrayLevel.Value;
+  NoScale:=CheckBoxScale.Checked;
+  FitCY:=CheckBoxFitCenterY.Checked;
   bma:=TBGRABitmap.Create;
   try
     bm:=TBitmap.Create;
@@ -173,7 +178,7 @@ begin
           fs.cx:=iWidth;
         end;
         ty:=0;
-        if fs.cy<iHeight then begin
+        if FitCY and (fs.cy<iHeight) then begin
           ty:=(iHeight-fs.cy) div 2;
           fs.cy:=iHeight;
         end;
@@ -185,24 +190,27 @@ begin
         bm.Canvas.TextOut(tx,ty,char(32+i));
 
         bma.Assign(bm);
-        bma.ResampleFilter:=TResampleFilter(ComboBoxAA.ItemIndex);
-        BGRAReplace(bma,bma.Resample(iWidth,iHeight));
-        //
-        for ty:=0 to iHeight-1 do begin
-          p:=bma.ScanLine[ty];
-          for tx:=0 to iWidth-1 do begin
-            if p^.blue>=glvl then
-              p^.FromColor(clWhite)
-              else
-                p^.FromColor(clBlack);
-            inc(p);
+        if not NoScale then begin
+          bma.ResampleFilter:=TResampleFilter(ComboBoxAA.ItemIndex);
+          BGRAReplace(bma,bma.Resample(iWidth,iHeight));
+          //
+          for ty:=0 to iHeight-1 do begin
+            p:=bma.ScanLine[ty];
+            for tx:=0 to iWidth-1 do begin
+              if p^.blue>=glvl then
+                p^.FromColor(clWhite)
+                else
+                  p^.FromColor(clBlack);
+              inc(p);
+            end;
           end;
+          bma.InvalidateBitmap;
         end;
-        bma.InvalidateBitmap;
         // copy font bitmap
         fx:=iWidth*(i mod 16);
         fy:=iHeight*(i div 16);
-        Image1.Picture.Bitmap.Canvas.CopyRect(Rect(fx,fy,fx+iWidth,fy+iHeight),bma.Canvas,Rect(0,0,bma.Width,bma.Height));
+        bma.Draw(Image1.Picture.Bitmap.Canvas,fx,fy,True);
+        Image1.Invalidate;
       end;
     finally
       bm.Free;
@@ -215,7 +223,7 @@ end;
 function TForm1.DecodeBuffer(const sbuf: string; cx: Integer): string;
 var
   st: TStringList;
-  i, j, k, l, x: Integer;
+  i, j, k, x: Integer;
   s, sb, sl: string;
 begin
   Result:='';
@@ -223,7 +231,6 @@ begin
   try
     st.Delimiter:=',';
     st.DelimitedText:=sbuf;
-    l:=0;
     sb:='';
     sl:='';
     i:=0;
