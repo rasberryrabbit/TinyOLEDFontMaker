@@ -12,13 +12,13 @@ object Form1: TForm1
   LCLVersion = '2.3.0.0'
   object ScrollBox1: TScrollBox
     Left = 168
-    Height = 409
-    Top = 8
+    Height = 393
+    Top = 24
     Width = 411
     HorzScrollBar.Page = 338
     VertScrollBar.Page = 248
     Anchors = [akTop, akLeft, akRight, akBottom]
-    ClientHeight = 405
+    ClientHeight = 389
     ClientWidth = 407
     TabOrder = 4
     object Image1: TImage
@@ -220,6 +220,14 @@ object Form1: TForm1
     OnChange = SpinEditFontSizeChange
     TabOrder = 5
     Value = 95
+  end
+  object Label7: TLabel
+    Left = 168
+    Height = 12
+    Top = 8
+    Width = 19
+    Caption = '0x0'
+    ParentColor = False
   end
   object FontDialog1: TFontDialog
     OnClose = FontDialog1Close

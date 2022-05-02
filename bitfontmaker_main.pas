@@ -30,6 +30,7 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
+    Label7: TLabel;
     OpenPictureDialog1: TOpenPictureDialog;
     SaveDialog1: TSaveDialog;
     SavePictureDialog1: TSavePictureDialog;
@@ -149,7 +150,7 @@ end;
 
 procedure TForm1.DrawFontList(iWidth, iHeight: Integer);
 var
-  i, fx, fy, tx, ty, glvl: Integer;
+  i, fx, fy, tx, ty, glvl, mx, my: Integer;
   bm: TBitmap;
   bma: TBGRABitmap;
   p: PBGRAPixel;
@@ -167,10 +168,16 @@ begin
       bm.PixelFormat:=pf1bit;
       Image1.Picture.Bitmap.SetSize(iWidth*16,iHeight*6);
 
+      mx:=0;
+      my:=0;
       for i:=0 to 95 do begin
         // make font bitmap
         bm.Canvas.Font.Assign(FontDialog1.Font);
         fs:=bm.Canvas.TextExtent(char(32+i));
+        if mx<fs.cx then
+          mx:=fs.cx;
+        if my<fs.cy then
+          my:=fs.cy;
 
         tx:=0;
         if fs.cx<iWidth then begin
@@ -212,6 +219,7 @@ begin
         bma.Draw(Image1.Picture.Bitmap.Canvas,fx,fy,True);
         Image1.Invalidate;
       end;
+      Label7.Caption:=Format('Max character size= %d, %d',[mx,my]);
     finally
       bm.Free;
     end;
