@@ -164,7 +164,7 @@ begin
   glvl:=SpinEditGrayLevel.Value;
   NoScale:=CheckBoxScale.Checked;
   FitCY:=CheckBoxFitCenterY.Checked;
-  gapY:=SpinEditGapY.Value;
+  gapY:=-SpinEditGapY.Value;
 
   bma:=TBGRABitmap.Create;
   try

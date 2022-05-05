@@ -207,7 +207,7 @@ object Form1: TForm1
     end
     object SpinEditGrayLevel: TSpinEdit
       Left = 104
-      Height = 20
+      Height = 23
       Top = 160
       Width = 46
       MaxValue = 255
@@ -218,7 +218,7 @@ object Form1: TForm1
     end
     object SpinEditGapY: TSpinEdit
       Left = 104
-      Height = 20
+      Height = 23
       Top = 192
       Width = 44
       MaxValue = 128
