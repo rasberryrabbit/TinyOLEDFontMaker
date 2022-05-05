@@ -25,6 +25,8 @@ type
     GroupBox1: TGroupBox;
     Image1: TImage;
     Label1: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -32,11 +34,11 @@ type
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
-    Label9: TLabel;
     OpenPictureDialog1: TOpenPictureDialog;
     SaveDialog1: TSaveDialog;
     SavePictureDialog1: TSavePictureDialog;
     ScrollBox1: TScrollBox;
+    SpinEditGapX: TSpinEdit;
     SpinEditFontSize: TSpinEdit;
     SpinEditGrayLevel: TSpinEdit;
     SpinEditGapY: TSpinEdit;
@@ -153,7 +155,7 @@ end;
 
 procedure TForm1.DrawFontList(iWidth, iHeight: Integer);
 var
-  i, fx, fy, tx, ty, glvl, gapY, mx, my, ax, ay: Integer;
+  i, fx, fy, tx, ty, glvl, gapX, gapY, mx, my, ax, ay: Integer;
   bm: TBitmap;
   bma: TBGRABitmap;
   p: PBGRAPixel;
@@ -164,6 +166,7 @@ begin
   glvl:=SpinEditGrayLevel.Value;
   NoScale:=CheckBoxScale.Checked;
   FitCY:=CheckBoxFitCenterY.Checked;
+  gapX:=-SpinEditGapX.Value;
   gapY:=-SpinEditGapY.Value;
 
   bma:=TBGRABitmap.Create;
@@ -206,14 +209,16 @@ begin
           ty:=(iHeight-fs.cy) div 2;
           fs.cy:=iHeight;
         end;
+        if fs.cx<=gapX then
+          gapX:=fs.cx-1;
         if fs.cy<=gapY then
           gapY:=fs.cy-1;
 
-        bm.SetSize(fs.cx, fs.cy-gapY);
+        bm.SetSize(fs.cx-gapX, fs.cy-gapY);
         bm.Canvas.Font.Color:=clWhite;
         bm.Canvas.Brush.Color:=clBlack;
         bm.Canvas.FillRect(0,0,bm.Width,bm.Height);
-        bm.Canvas.TextOut(tx,ty-gapY,char(32+i));
+        bm.Canvas.TextOut(tx-gapX,ty-gapY,char(32+i));
 
         bma.Assign(bm);
         if not NoScale then begin
@@ -239,7 +244,7 @@ begin
         Image1.Invalidate;
       end;
       Label7.Caption:=Format('Max character size= %d, %d',[mx,my]);
-      Label8.Caption:=Format('AverAge character size= %d, %d',[ax,ay]);
+      Label8.Caption:=Format('Average character size= %d, %d',[ax,ay]);
     finally
       bm.Free;
     end;
