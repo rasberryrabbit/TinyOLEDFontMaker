@@ -31,12 +31,15 @@ type
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
     OpenPictureDialog1: TOpenPictureDialog;
     SaveDialog1: TSaveDialog;
     SavePictureDialog1: TSavePictureDialog;
     ScrollBox1: TScrollBox;
     SpinEditFontSize: TSpinEdit;
     SpinEditGrayLevel: TSpinEdit;
+    SpinEditGapY: TSpinEdit;
     SpinEditHeight: TSpinEdit;
     SpinEditWidth: TSpinEdit;
     procedure Button1Click(Sender: TObject);
@@ -150,7 +153,7 @@ end;
 
 procedure TForm1.DrawFontList(iWidth, iHeight: Integer);
 var
-  i, fx, fy, tx, ty, glvl, mx, my: Integer;
+  i, fx, fy, tx, ty, glvl, gapY, mx, my, ax, ay: Integer;
   bm: TBitmap;
   bma: TBGRABitmap;
   p: PBGRAPixel;
@@ -161,6 +164,8 @@ begin
   glvl:=SpinEditGrayLevel.Value;
   NoScale:=CheckBoxScale.Checked;
   FitCY:=CheckBoxFitCenterY.Checked;
+  gapY:=SpinEditGapY.Value;
+
   bma:=TBGRABitmap.Create;
   try
     bm:=TBitmap.Create;
@@ -170,10 +175,22 @@ begin
 
       mx:=0;
       my:=0;
+      ax:=0;
+      ay:=0;
       for i:=0 to 95 do begin
         // make font bitmap
         bm.Canvas.Font.Assign(FontDialog1.Font);
         fs:=bm.Canvas.TextExtent(char(32+i));
+
+        if ax=0 then
+          ax:=fs.cx
+          else
+            ax:=(fs.cx+ax) div 2;
+        if ay=0 then
+          ay:=fs.cy
+          else
+            ay:=(fs.cy+ay) div 2;
+
         if mx<fs.cx then
           mx:=fs.cx;
         if my<fs.cy then
@@ -189,12 +206,14 @@ begin
           ty:=(iHeight-fs.cy) div 2;
           fs.cy:=iHeight;
         end;
+        if fs.cy<=gapY then
+          gapY:=fs.cy-1;
 
-        bm.SetSize(fs.cx, fs.cy);
+        bm.SetSize(fs.cx, fs.cy-gapY);
         bm.Canvas.Font.Color:=clWhite;
         bm.Canvas.Brush.Color:=clBlack;
         bm.Canvas.FillRect(0,0,bm.Width,bm.Height);
-        bm.Canvas.TextOut(tx,ty,char(32+i));
+        bm.Canvas.TextOut(tx,ty-gapY,char(32+i));
 
         bma.Assign(bm);
         if not NoScale then begin
@@ -220,6 +239,7 @@ begin
         Image1.Invalidate;
       end;
       Label7.Caption:=Format('Max character size= %d, %d',[mx,my]);
+      Label8.Caption:=Format('AverAge character size= %d, %d',[ax,ay]);
     finally
       bm.Free;
     end;
