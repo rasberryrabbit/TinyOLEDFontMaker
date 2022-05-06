@@ -155,7 +155,7 @@ end;
 
 procedure TForm1.DrawFontList(iWidth, iHeight: Integer);
 var
-  i, fx, fy, tx, ty, glvl, gapX, gapY, mx, my, ax, ay: Integer;
+  i, fx, fy, tx, ty, glvl, modX, modY, mx, my, ax, ay: Integer;
   bm: TBitmap;
   bma: TBGRABitmap;
   p: PBGRAPixel;
@@ -166,8 +166,8 @@ begin
   glvl:=SpinEditGrayLevel.Value;
   NoScale:=CheckBoxScale.Checked;
   FitCY:=CheckBoxFitCenterY.Checked;
-  gapX:=-SpinEditGapX.Value;
-  gapY:=-SpinEditGapY.Value;
+  modX:=-SpinEditGapX.Value;
+  modY:=-SpinEditGapY.Value;
 
   bma:=TBGRABitmap.Create;
   try
@@ -209,16 +209,16 @@ begin
           ty:=(iHeight-fs.cy) div 2;
           fs.cy:=iHeight;
         end;
-        if fs.cx<=gapX then
-          gapX:=fs.cx-1;
-        if fs.cy<=gapY then
-          gapY:=fs.cy-1;
+        if fs.cx<=modX then
+          modX:=fs.cx-1;
+        if fs.cy<=modY then
+          modY:=fs.cy-1;
 
-        bm.SetSize(fs.cx-gapX, fs.cy-gapY);
+        bm.SetSize(fs.cx-modX, fs.cy-modY);
         bm.Canvas.Font.Color:=clWhite;
         bm.Canvas.Brush.Color:=clBlack;
         bm.Canvas.FillRect(0,0,bm.Width,bm.Height);
-        bm.Canvas.TextOut(tx-gapX,ty-gapY,char(32+i));
+        bm.Canvas.TextOut(tx-modX,ty-modY,char(32+i));
 
         bma.Assign(bm);
         if not NoScale then begin
