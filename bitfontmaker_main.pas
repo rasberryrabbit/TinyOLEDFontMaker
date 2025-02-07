@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Spin, ExtDlgs;
+  ExtCtrls, Spin, ExtDlgs, UExceptionLogger;
 
 type
 
@@ -14,10 +14,12 @@ type
 
   TForm1 = class(TForm)
     Button1: TButton;
+    ButtonExBin: TButton;
     ButtonOpenImg: TButton;
     ButtonExTxt: TButton;
     ButtonExImg: TButton;
     CheckBoxFitCenterY: TCheckBox;
+    CheckBoxSkipCtlChar: TCheckBox;
     CheckBoxScale: TCheckBox;
     ComboBoxAA: TComboBox;
     EditFontName: TEdit;
@@ -45,10 +47,12 @@ type
     SpinEditHeight: TSpinEdit;
     SpinEditWidth: TSpinEdit;
     procedure Button1Click(Sender: TObject);
+    procedure ButtonExBinClick(Sender: TObject);
     procedure ButtonExTxtClick(Sender: TObject);
     procedure ButtonExImgClick(Sender: TObject);
     procedure ButtonOpenImgClick(Sender: TObject);
     procedure FontDialog1Close(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure SpinEditChange(Sender: TObject);
     procedure SpinEditFontSizeChange(Sender: TObject);
@@ -60,6 +64,7 @@ type
     // for debug
     function DecodeBuffer(const sbuf: string; cx: Integer):string;
     function EncodeBitmap:string;
+    function EncodeBitmapBin:TMemoryStream;
 
   end;
 
@@ -78,6 +83,20 @@ uses
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   FontDialog1.Execute;
+end;
+
+procedure TForm1.ButtonExBinClick(Sender: TObject);
+var
+  binbuf: TMemoryStream;
+begin
+  SaveDialog1.FileName:=Format('%s_%d_%d_%d_%d.bin',[EditFontName.Text,SpinEditWidth.Value,
+                                   SpinEditHeight.Value,SpinEditFontSize.Value,SpinEditGrayLevel.Value]);
+  if SaveDialog1.Execute then begin
+    binbuf:=EncodeBitmapBin;
+    if Assigned(binbuf) then begin
+        binbuf.SaveToFile(SaveDialog1.FileName);
+    end;
+  end;
 end;
 
 procedure TForm1.ButtonExTxtClick(Sender: TObject);
@@ -130,6 +149,11 @@ begin
   DrawFontList(SpinEditWidth.Value, SpinEditHeight.Value);
 end;
 
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  exceptionLogger.LogFileName:='bugreport.txt';
+end;
+
 procedure TForm1.FormShow(Sender: TObject);
 begin
   EditFontName.Text:=FontDialog1.Font.Name;
@@ -154,6 +178,8 @@ begin
 end;
 
 procedure TForm1.DrawFontList(iWidth, iHeight: Integer);
+type
+  ltstring = type ansistring(1252);
 var
   i, fx, fy, tx, ty, glvl, modX, modY, mx, my, ax, ay: Integer;
   bm: TBitmap;
@@ -162,6 +188,7 @@ var
   fs: TSize;
   NoScale: Boolean;
   FitCY: Boolean;
+  s: ltstring;
 begin
   glvl:=SpinEditGrayLevel.Value;
   NoScale:=CheckBoxScale.Checked;
@@ -174,16 +201,17 @@ begin
     bm:=TBitmap.Create;
     try
       bm.PixelFormat:=pf1bit;
-      Image1.Picture.Bitmap.SetSize(iWidth*16,iHeight*6);
+      Image1.SetBounds(0,0,iWidth*16,iHeight*16);
+      Image1.Picture.Bitmap.SetSize(iWidth*16,iHeight*16);
 
       mx:=0;
       my:=0;
       ax:=0;
       ay:=0;
-      for i:=0 to 95 do begin
+      for i:=0 to 255 do begin
         // make font bitmap
         bm.Canvas.Font.Assign(FontDialog1.Font);
-        fs:=bm.Canvas.TextExtent(char(32+i));
+        fs:=bm.Canvas.TextExtent(ltstring(char(i)));
 
         if ax=0 then
           ax:=fs.cx
@@ -214,11 +242,11 @@ begin
         if fs.cy<=modY then
           modY:=fs.cy-1;
 
-        bm.SetSize(fs.cx-modX, fs.cy-modY);
+        bm.SetSize(fs.Width-modX,fs.Height-modY);
         bm.Canvas.Font.Color:=clWhite;
         bm.Canvas.Brush.Color:=clBlack;
         bm.Canvas.FillRect(0,0,bm.Width,bm.Height);
-        bm.Canvas.TextOut(tx-modX,ty-modY,char(32+i));
+        bm.Canvas.TextOut(tx-modX,ty-modY,ltstring(char(i)));
 
         bma.Assign(bm);
         if not NoScale then begin
@@ -295,7 +323,7 @@ var
   bm: TBitmap;
   sbuf: string;
   val: Integer;
-  i, dy, iy, ix, by, bx, fy, fx: Integer;
+  i, dy, iy, ix, by, bx, fy, fx, stchar, edchar: Integer;
 begin
   Result:='';
 
@@ -307,8 +335,14 @@ begin
     bm.PixelFormat:=pf1bit;
     Result:=Format('// %s, size: %d', [EditFontName.Text,FontDialog1.Font.Size])+LineEnding;
     Result:=Result+Format('// Width=%d, Height=%d', [bx, by])+LineEnding;
-    for i:=0 to 95 do begin
-      Result:=Result+'//'+IntToStr(i+32)+' '+char(i+32)+LineEnding;
+    stchar:=0;
+    edchar:=255;
+    if CheckBoxSkipCtlChar.Checked then begin
+      stchar:=32;
+      edchar:=127;
+    end;
+    for i:=stchar to edchar do begin
+      Result:=Result+'//'+IntToStr(i)+' '+char(i)+LineEnding;
       fx:=bx*(i mod 16);
       fy:=by*(i div 16);
       bm.Canvas.CopyRect(Rect(0, 0, bx, by), Image1.Picture.Bitmap.Canvas, Rect(
@@ -336,6 +370,62 @@ begin
     end;
   finally
     bm.Free;
+  end;
+end;
+
+function TForm1.EncodeBitmapBin:TMemoryStream;
+var
+  bm: TBitmap;
+  val: Byte;
+  i, dy, iy, ix, by, bx, fy, fx, stchar, edchar: Integer;
+  bbx, bby: Byte;
+begin
+  Result:=TMemoryStream.Create;
+  try
+    bx:=SpinEditWidth.Value;
+    by:=SpinEditHeight.Value;
+    bm:=TBitmap.Create;
+    try
+      bm.SetSize(bx, by);
+      bm.PixelFormat:=pf1bit;
+      bbx:=bx;
+      bby:=by;
+      Result.Write(bbx,1);
+      Result.Write(bby,1);
+      stchar:=0;
+      edchar:=255;
+      //if CheckBoxSkipCtlChar.Checked then begin
+      //  stchar:=32;
+      //  edchar:=127;
+      //end;
+      for i:=stchar to edchar do begin
+        fx:=bx*(i mod 16);
+        fy:=by*(i div 16);
+        bm.Canvas.CopyRect(Rect(0, 0, bx, by), Image1.Picture.Bitmap.Canvas, Rect(
+          fx, fy, fx+bx, fy+by));
+        ix:=0;
+        dy:=0;
+        while dy<by do begin
+          while ix<bx do begin
+            val:=0;
+            for iy:=0 to 7 do begin
+              if dy+iy<by then
+                if bm.Canvas.Pixels[ix, dy+iy]<>0 then
+                  val:=val or (1 shl iy);
+            end;
+            result.Write(val,1);
+            inc(ix);
+          end;
+          inc(dy, 8);
+          ix:=0;
+        end;
+      end;
+    finally
+      bm.Free;
+    end;
+  except
+    Result.Free;
+    Result:=nil;
   end;
 end;
 
